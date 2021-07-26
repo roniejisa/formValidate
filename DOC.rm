@@ -1,0 +1,25 @@
+Cách sử dụng hiện tại
+
+Thẻ Form thêm class formValidation
+    <form class="formValidation">
+
+Dùng AJAX thì thêm data-success = "(OBJECT || FUNCTION) CALLBACK" 
+<form class="formValidation" data-success="CALLBACK.nameFunction">
+
+Validate: trừ kiểu input radio || checkbox
+
+Thêm attribute rules có attribute là các validate cách nhau bằng dấu || và min, max, regex, same thêm ::
+và thêm lời nhắn bằng m-min,m-max,...
+
+VD: <input type="text" rules="email||required||regex::123||min::1||max::10||same::pasword" m-email="Hãy nhập email đi">
+
+3.Sử dụng FORM PREVIEW Ảnh
+3.1 Thêm vào form attribute data-file
+3.2 Thêm div nhận ảnh có attribute là data-gallery 
+3.3 Thêm input chọn ảnh có attribute là input-file - sau lần render đầu có thể sử dụng kéo thả
+
+VD: 
+<form class="formValidation" datafile>
+<div data-gallery></div>
+<input type="files" input-file>   
+

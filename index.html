@@ -11,22 +11,25 @@
 
 <body>
     <div class="main">
-        <form action="https://jsonplaceholder.typicode.com/todos/1" method="GET" class="form formValidation" data-sucess="CALLBACK">
+        <form action="index" method="POST" class="form formValidation" data-success="CALLBACK" data-file>
             <h3 class="heading">Thành viên đăng ký</h3>
             <div class="spacer"></div>
             <div class="form-group">
                 <label class="form-label">Tên đầy đủ</label>
-                <input name="fullname" rules="required" m-required="Vui lòng nhập tên" type="text" placeholder="VD: Sơn Đặng" class="form-control">
+                <input name="fullname" rules='required' m-required="Vui lòng nhập tên" type="text"
+                    placeholder="VD: Sơn Đặng" class="form-control">
             </div>
+            <!-- 
             <div class="form-group">
-                <label  class="form-label">Email</label>
-                <input name="email" type="text" rules="required|email" m-required="Vui lòng nhập Email" m-email="Email đang không chuẩn" placeholder="VD: email@domain.com" class="form-control">
+                <label class="form-label">Email</label>
+                <input name="email" type="text" rules="required|email" m-required="Vui lòng nhập Email"
+                    m-email="Email đang không chuẩn" placeholder="VD: email@domain.com" class="form-control">
             </div>
-            
+
             <div class="form-group">
                 <label for="email" class="form-label">Giới tính</label>
                 <div>
-                    <input name="gender" type="radio" value="male"  class="form-control"><span>Nam</span>
+                    <input name="gender" type="radio" value="male" class="form-control"><span>Nam</span>
                     <input name="gender" type="radio" value="female" class="form-control"><span>Nữ</span>
                     <input name="gender" type="radio" value="other" class="form-control"><span>Khác</span>
                 </div>
@@ -38,13 +41,17 @@
                     <input name="gender2" type="checkbox" value="111111" class="form-control"><span>Nam</span>
                     <input name="gender2" type="checkbox" value="22222" class="form-control"><span>Nam</span>
                 </div>
+            </div> -->
+            <div data-gallery>
+
             </div>
             <div class="form-group">
                 <label for="avatar" class="form-label">Ảnh</label>
-                <input type="file" id="avatar" name="avatar" class="form-control" rules="required" m-required="Vui lòng chọn ảnh">
+                <input type="file" input-file id="avatar" name="avatar" class="form-control" rules="required"
+                    m-required="Vui lòng chọn ảnh" multiple>
             </div>
-            <div class="form-group">
-                    <label for="email" class="form-label">Tỉnh thành</label>
+            <!-- <div class="form-group">
+                <label for="email" class="form-label">Tỉnh thành</label>
                 <select name="province" id="province" class="form-control" rules="required">
                     <option value="">-- Tỉnh thành --</option>
                     <option value="1">Hà Nội</option>
@@ -53,21 +60,26 @@
             </div>
             <div class="form-group">
                 <label for="password" class="form-label">Mật khẩu</label>
-                <input id="password" name="password" rules="required|min:8" m-required="Vui lòng nhập mật khẩu" m-min="Mật khẩu có ít nhất 8 kí tự" type="password" placeholder="Nhập mật khẩu" class="form-control">
+                <input id="password" name="password" rules="required|min:8" m-required="Vui lòng nhập mật khẩu"
+                    m-min="Mật khẩu có ít nhất 8 kí tự" type="password" placeholder="Nhập mật khẩu"
+                    class="form-control">
             </div>
             <div class="form-group">
                 <label for="password_confirmation" class="form-label">Nhập lại mật khẩu</label>
-                <input id="password_confirmation" rules="required|same:password" m-required="Vui lòng nhập mật khẩu" m-min="Mật khẩu phải có ít nhất 8 kí tự" m-same="Mật khẩu đang không giống nhau" name="password_confirmation" placeholder="Nhập lại mật khẩu"
-                    type="password" class="form-control">
-            </div>
+                <input id="password_confirmation" rules="required|same:password" m-required="Vui lòng nhập mật khẩu"
+                    m-min="Mật khẩu phải có ít nhất 8 kí tự" m-same="Mật khẩu đang không giống nhau"
+                    name="password_confirmation" placeholder="Nhập lại mật khẩu" type="password" class="form-control">
+            </div> -->
             <button type="submit" class="btn-submit">Đăng kí</button>
         </form>
     </div>
 </body>
-<script src="validator.js" ></script>
+<!-- <script src="validator.js" ></script> -->
+<script src="validatorIMG.js"></script>
 <script>
-   CALLBACK = function(){
-       
-   }
+    CALLBACK = function () {
+
+    }
 </script>
+
 </html>

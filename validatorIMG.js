@@ -17,6 +17,13 @@
 					: selector.getAttribute("m-required") || "Vui lòng nhập trường này";
 			}
 		},
+		number: function (selector) {
+			var regex = /^[0-9]+$/;
+			return regex.test(selector.value)
+				? undefined
+				: selector.getAttribute("m-number") ||
+						"Vui lòng nhập đúng định dạng số";
+		},
 		email: function (selector) {
 			var regex =
 				/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -49,6 +56,17 @@
 				return selector.value === selectorElement
 					? undefined
 					: selector.getAttribute("m-same") || "Mật khẩu không giống nhau";
+			};
+		},
+		different: function (nameSelector, formElement) {
+			return function (selector) {
+				var selectorElement = formElement.querySelector(
+					`[name="${nameSelector}"]`
+				).value;
+				return selector.value !== selectorElement
+					? undefined
+					: selector.getAttribute("m-different") ||
+							"Mật khẩu không được giống nhau";
 			};
 		},
 		regex: function (regex) {
@@ -104,7 +122,7 @@
 	var cssAnimation = document.createElement("style");
 	cssAnimation.type = "text/css";
 	var keyframes = document.createTextNode(
-		`@-webkit-keyframes openErrorMessage {from { opacity:0; } to{opacity:1} }`
+		`@-webkit-keyframes openErrorMessage {from { opacity:0; transform: translateY(15px) } to{opacity:1; transform: translateY(5px)} }`
 	);
 	cssAnimation.appendChild(keyframes);
 	document.getElementsByTagName("head")[0].appendChild(cssAnimation);
@@ -117,6 +135,8 @@
 		var errorSelector = [];
 		var editImage = form.dataset.file == "" ? true : false;
 		var inputFile;
+		var isAbsolute = form.dataset.absolute == "" ? true : false;
+		var isClear = form.dataset.clear == "" ? true : false;
 		var validateRadioCheckBox = function (rule, isSubmit) {
 			var rules = selectorRules[rule.selector];
 			var inputElement = formElement.querySelector(rule.selector);
@@ -146,12 +166,11 @@
 			referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 		};
 
-		var actionNoParentElement = function (
-			errorMessage,
-			selector,
-			isSubmit = true
-		) {
-			var errorElement = document.createElement("span");
+		var appendError = function (referenceNode, newNode) {
+			referenceNode.appendChild(newNode);
+		};
+
+		var configErrorElement = function (errorElement) {
 			errorElement.className = "r-error-message";
 			Object.assign(errorElement.style, {
 				color: "red",
@@ -162,6 +181,61 @@
 				textAlign: "left",
 				animation: "0.3s openErrorMessage ease-in-out forwards",
 			});
+		};
+
+		var actionHasParentElement = function (
+			parentElement,
+			errorMessage,
+			selector,
+			isSubmit = true
+		) {
+			var errorElement = document.createElement("span");
+			configErrorElement(errorElement);
+
+			if (errorMessage) {
+				if (isSubmit) {
+					errorSelector.push(selector);
+					switch (selector.type) {
+						case "text":
+						case "password":
+						case "select":
+							errorSelector[0].focus();
+							break;
+						default:
+							break;
+					}
+				}
+				errorElement.innerHTML = errorMessage;
+				switch (selector.type) {
+					case "checkbox":
+					case "radio":
+						if (
+							selector.parentElement.nextSibling.className !== "r-error-message"
+						) {
+							insertAfter(selector.parentElement, errorElement);
+						}
+						break;
+					default:
+						if (!parentElement.querySelector(".r-error-message")) {
+							appendError(parentElement, errorElement);
+							selector.style.border = "1px solid red";
+						}
+						break;
+				}
+			}
+		};
+
+		var actionNoParentElement = function (
+			errorMessage,
+			selector,
+			isSubmit = true
+		) {
+			var errorElement = document.createElement("span");
+			configErrorElement(errorElement);
+
+			isAbsolute
+				? (errorElement.style.position = "absolute")
+				: (errorElement.style.position = "");
 			if (errorMessage) {
 				if (isSubmit) {
 					errorSelector.push(selector);
@@ -196,6 +270,10 @@
 		};
 
 		var handleClearError = function (event) {
+			var parentElement = false;
+			if (formElement.dataset.parent) {
+				parentElement = getParent(event.target, formElement.dataset.parent);
+			}
 			switch (event.target.type) {
 				case "checkbox":
 				case "radio":
@@ -206,10 +284,25 @@
 						event.target.parentElement.nextSibling.remove();
 					}
 					break;
+				case "select-one":
+					if (event.target.value == "") {
+						handleValidateFocus(event);
+						break;
+					}
 				default:
 					if (event.target.nextSibling.className === "r-error-message") {
 						event.target.style.removeProperty("border");
 						event.target.nextSibling.remove();
+					} else if (
+						parentElement &&
+						parentElement.querySelector(".r-error-message")
+					) {
+						var parentElement = getParent(
+							event.target,
+							formElement.dataset.parent
+						);
+						parentElement.querySelector(".r-error-message").remove();
+						event.target.style.removeProperty("border");
 					}
 					break;
 			}
@@ -225,7 +318,15 @@
 					break;
 				}
 			}
-			actionNoParentElement(errorMessage, selector, false);
+			var parentElement = false;
+			if (formElement.dataset.parent) {
+				parentElement = getParent(selector, formElement.dataset.parent);
+			}
+			if (parentElement) {
+				actionHasParentElement(parentElement, errorMessage, selector, false);
+			} else {
+				actionNoParentElement(errorMessage, selector, false);
+			}
 			return !errorMessage;
 		};
 
@@ -239,8 +340,15 @@
 					break;
 				}
 			}
-
-			actionNoParentElement(errorMessage, selector, true);
+			var parentElement = false;
+			if (formElement.dataset.parent) {
+				parentElement = getParent(selector, formElement.dataset.parent);
+			}
+			if (parentElement) {
+				actionHasParentElement(parentElement, errorMessage, selector, true);
+			} else {
+				actionNoParentElement(errorMessage, selector, true);
+			}
 			return !errorMessage;
 		};
 
@@ -683,6 +791,7 @@
 				transition: "all 0.3s",
 			});
 		};
+
 		var elementLi = function (li) {
 			Object.assign(li.style, {
 				position: "relative",
@@ -741,6 +850,27 @@
 			};
 		};
 
+		var clearForm = function (form) {
+			inputs = form.querySelectorAll("[name]");
+			inputs.forEach(function (element) {
+				console.log(element);
+				switch (element.type) {
+					case "checkbox":
+					case "radio":
+						element.checked = false;
+						break;
+					case "selected":
+						element.seleced = false;
+						break;
+					case "hidden":
+						break;
+					default:
+						element.value = "";
+						break;
+				}
+			});
+		};
+
 		var submitForm = function (data, formElement) {
 			var check = formElement.dataset.success;
 			if (!check) {
@@ -756,7 +886,15 @@
 				if (ajax.readyState === XMLHttpRequest.DONE) {
 					var status = ajax.status;
 					if (status === 0 || (status >= 200 && status < 400)) {
-						return callFunction(check, JSON.parse(ajax.responseText), formElement);
+						if (isClear) {
+							clearForm(formElement);
+						}
+						console.log(check);
+						return callFunction(
+							check,
+							JSON.parse(ajax.responseText),
+							formElement
+						);
 					} else {
 						console.log("lỗi");
 					}
@@ -770,7 +908,7 @@
 				Array.from(fileList).forEach(function (file) {
 					formData.append(inputFile + "[]", file);
 				});
-			} else if(data.image){
+			} else if (data.image) {
 				Array.from(data.image).forEach(function (file) {
 					formData.append(inputFile + "[]", file);
 				});
@@ -783,7 +921,7 @@
 			}
 
 			Object.assign(button.style, {
-				width: `${button.offsetWidth}px`,
+				width: `${button.offsetWidth}.5px`,
 				height: `${button.offsetHeight}px`,
 				position: `relative`,
 				display: "inline-block",
@@ -828,6 +966,7 @@
 				//  Lắng nghe sự kiên validate (blur,change,onsubmit)
 				selector.onblur = handleValidateFocus;
 				selector.oninput = handleClearError;
+				selector.onchange = handleClearError;
 			}
 
 			formElement.onsubmit = function (event) {

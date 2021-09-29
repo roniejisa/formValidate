@@ -11,13 +11,45 @@
 
 <body>
     <div class="main">
-        <form action="index" method="POST" class="form formValidation" data-success="CALLBACK" data-file>
+        <form action="index" method="POST" class="form formValidation" data-check data-success="CALLBACK" data-file>
             <h3 class="heading">Thành viên đăng ký</h3>
             <div class="spacer"></div>
             <div class="form-group">
                 <label class="form-label">Tên đầy đủ</label>
                 <input name="fullname" rules='required' m-required="Vui lòng nhập tên" type="text"
                     placeholder="VD: Sơn Đặng" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="email" class="form-label">Giới tính</label>
+                <div m-checked="ok roi day">
+                    <input name="gender" type="radio" value="male" class="form-control"><span>Nam</span>
+                    <input name="gender" type="radio" value="female" class="form-control"><span>Nữ</span>
+                    <input name="gender" type="radio" value="other" class="form-control"><span>Khác</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email" class="form-label">Giới tính</label>
+                <div m-checked="ngon rồi">
+                    <input name="gender2" type="checkbox" value="55555" class="form-control"><span>Nam</span>
+                    <input name="gender2" type="checkbox" value="111111" class="form-control"><span>Nam</span>
+                    <input name="gender2" type="checkbox" value="22222" class="form-control"><span>Nam</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email" class="form-label">Tỉnh thành</label>
+                <select name="province" id="province" class="form-control" rules="required">
+                    <option value="">-- Tỉnh thành --</option>
+                    <option value="1">Hà Nội</option>
+                    <option value="2">Hải Phòng</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="email" class="form-label">Tỉnh thành</label>
+                <select name="email" id="province" class="form-control" rules="required">
+                    <option value="">-- Tỉnh thành --</option>
+                    <option value="1">Hà Nội</option>
+                    <option value="2">Hải Phòng</option>
+                </select>
             </div>
             <!-- 
             <div class="form-group">
@@ -26,14 +58,7 @@
                     m-email="Email đang không chuẩn" placeholder="VD: email@domain.com" class="form-control">
             </div>
 
-            <div class="form-group">
-                <label for="email" class="form-label">Giới tính</label>
-                <div>
-                    <input name="gender" type="radio" value="male" class="form-control"><span>Nam</span>
-                    <input name="gender" type="radio" value="female" class="form-control"><span>Nữ</span>
-                    <input name="gender" type="radio" value="other" class="form-control"><span>Khác</span>
-                </div>
-            </div>
+            
             <div class="form-group">
                 <label for="email" class="form-label">Giới tính</label>
                 <div>
@@ -43,12 +68,10 @@
                 </div>
             </div> -->
             <div data-gallery>
-
             </div>
             <div class="form-group">
                 <label for="avatar" class="form-label">Ảnh</label>
-                <input type="file" input-file id="avatar" name="avatar" class="form-control" rules="required"
-                    m-required="Vui lòng chọn ảnh" multiple>
+                <input type="file" input-file id="avatar" name="avatar" class="form-control" m-required="Vui lòng chọn ảnh" multiple>
             </div>
             <!-- <div class="form-group">
                 <label for="email" class="form-label">Tỉnh thành</label>

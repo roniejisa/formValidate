@@ -11,12 +11,17 @@
 
 <body>
     <div class="main">
-        <form action="index" method="POST" class="form formValidation" data-check data-success="CALLBACK" data-file>
+        <form action="index" method="POST" class="form formValidation" data-success="CALLBACK" files absolute check>
             <h3 class="heading">Thành viên đăng ký</h3>
             <div class="spacer"></div>
-            <div class="form-group">
+            <div class="form-group" style="height: 30px">
                 <label class="form-label">Tên đầy đủ</label>
-                <input name="fullname" rules='required' m-required="Vui lòng nhập tên" type="text"
+                <style>
+                    .a {
+                        height: 0;
+                    }
+                </style>
+                <input name="fullname" class="a" rules='required' m-required="Vui lòng nhập tên" type="text"
                     placeholder="VD: Sơn Đặng" class="form-control">
             </div>
             <div class="form-group">
@@ -67,11 +72,11 @@
                     <input name="gender2" type="checkbox" value="22222" class="form-control"><span>Nam</span>
                 </div>
             </div> -->
-            <div data-gallery>
-            </div>
+            <div data-gallery></div>
             <div class="form-group">
                 <label for="avatar" class="form-label">Ảnh</label>
-                <input type="file" input-file id="avatar" name="avatar" class="form-control" m-required="Vui lòng chọn ảnh" multiple>
+                <input type="file" input-file id="avatar" name="avatar" rules="required" class="form-control"
+                    m-required="Vui lòng chọn ảnh" multiple>
             </div>
             <!-- <div class="form-group">
                 <label for="email" class="form-label">Tỉnh thành</label>
